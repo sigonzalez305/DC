@@ -70,8 +70,8 @@ export class RedditCollector {
     console.log(`🔍 Fetching ${limit} posts from r/washingtondc...`);
 
     try {
-      const subreddit = await this.reddit.getSubreddit('washingtondc');
-      const posts = await subreddit.getNew({ limit });
+      const subreddit = await (this.reddit.getSubreddit('washingtondc') as any);
+      const posts = await (subreddit.getNew({ limit }) as any);
 
       console.log(`✓ Fetched ${posts.length} posts from Reddit`);
 
