@@ -20,6 +20,9 @@ DC/
 - ✅ Basic dashboard layout with map placeholder
 - ✅ Sentiment tracking (positive/neutral/negative)
 - ✅ Ward-based geographic organization
+- ✅ Database migrations and seeding system
+- ✅ Reddit data collector for r/washingtondc
+- ✅ Automated sentiment analysis
 
 ## Tech Stack
 
@@ -86,11 +89,19 @@ CREATE EXTENSION postgis;
 \q
 ```
 
-Run the schema:
+Run migrations and seeds:
 
 ```bash
 cd backend
-psql -U postgres -d dc_community_pulse -f src/db/schema.sql
+
+# Install dependencies first
+npm install
+
+# Run migrations to create tables
+npm run migrate
+
+# Run seeds to populate initial data (DC wards and Reddit source)
+npm run seed
 ```
 
 ### 3. Backend Setup
@@ -122,6 +133,12 @@ DB_PORT=5432
 DB_NAME=dc_community_pulse
 DB_USER=postgres
 DB_PASSWORD=postgres
+
+# Reddit API Configuration (optional - for data collection)
+# Get credentials from: https://www.reddit.com/prefs/apps
+REDDIT_CLIENT_ID=your_client_id_here
+REDDIT_CLIENT_SECRET=your_client_secret_here
+REDDIT_USER_AGENT=DC Community Pulse v1.0.0
 ```
 
 ### 4. Frontend Setup
@@ -229,6 +246,40 @@ cd frontend
 npm run dev
 ```
 
+### Collecting Data from Reddit
+
+To fetch posts from r/washingtondc:
+
+```bash
+cd backend
+
+# Make sure you've set up Reddit API credentials in .env
+# Then run the collector
+ts-node src/collectors/reddit.ts
+```
+
+The collector will:
+1. Fetch the latest posts from r/washingtondc
+2. Analyze sentiment using the built-in sentiment analysis
+3. Categorize posts (events, crime, transportation, housing, etc.)
+4. Save signals to the database
+5. Skip posts that have already been collected
+
+### Database Management
+
+```bash
+cd backend
+
+# Run migrations (creates tables)
+npm run migrate
+
+# Run seeds (populates initial data)
+npm run seed
+
+# Run Reddit collector manually
+ts-node src/collectors/reddit.ts
+```
+
 ### Building for Production
 
 **Backend:**
@@ -248,15 +299,18 @@ npm run preview
 ## Next Steps (Future Phases)
 
 ### Phase 2: Data Collection
-- Integrate social media APIs (Twitter, Reddit, etc.)
-- Set up data scraping for government sources
-- Implement scheduled data fetching
+- ✅ Reddit API integration for r/washingtondc
+- ⏳ Scheduled data fetching (cron jobs)
+- ⏳ Twitter/X API integration
+- ⏳ Set up data scraping for government sources
+- ⏳ Nextdoor integration
 
 ### Phase 3: Analysis
-- Add sentiment analysis with NLP
-- Implement keyword extraction
-- Create topic clustering
-- Geographic hotspot detection
+- ✅ Sentiment analysis with NLP
+- ✅ Basic categorization (events, crime, transportation, etc.)
+- ⏳ Keyword extraction
+- ⏳ Create topic clustering
+- ⏳ Geographic hotspot detection
 
 ### Phase 4: Visualization
 - Integrate Mapbox or Leaflet for interactive maps
@@ -272,15 +326,17 @@ npm run preview
 
 ## Project Status
 
-**Current Phase**: Phase 1 - Foundation ✅
+**Current Phase**: Phase 2 - Data Collection 🚧
 
 - [x] Project structure
 - [x] Database schema with PostGIS
 - [x] Backend API with TypeScript
 - [x] Frontend with React and Tailwind
 - [x] Basic dashboard layout
-- [ ] Data collection pipeline
-- [ ] Sentiment analysis
+- [x] Database migrations and seeds
+- [x] Reddit data collector
+- [x] Sentiment analysis
+- [ ] Scheduled data fetching
 - [ ] Map integration
 - [ ] Real-time updates
 
