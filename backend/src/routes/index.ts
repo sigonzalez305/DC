@@ -1,0 +1,22 @@
+import { Router } from 'express';
+import signalsRouter from './signals';
+import wardsRouter from './wards';
+import sourcesRouter from './sources';
+
+const router = Router();
+
+// Health check endpoint
+router.get('/health', (req, res) => {
+  res.json({
+    success: true,
+    message: 'DC Community Pulse API is running',
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Mount route modules
+router.use('/signals', signalsRouter);
+router.use('/wards', wardsRouter);
+router.use('/sources', sourcesRouter);
+
+export default router;
