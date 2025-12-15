@@ -2,6 +2,7 @@ import { Router } from 'express';
 import signalsRouter from './signals';
 import wardsRouter from './wards';
 import sourcesRouter from './sources';
+import sentimentRouter from './sentiment';
 
 const router = Router();
 
@@ -18,5 +19,6 @@ router.get('/health', (req, res) => {
 router.use('/signals', signalsRouter);
 router.use('/wards', wardsRouter);
 router.use('/sources', sourcesRouter);
+router.use('/sentiment', sentimentRouter);
 
 export default router;
