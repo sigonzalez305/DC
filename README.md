@@ -180,6 +180,10 @@ VITE_API_URL=http://localhost:3000/api
 - `GET /api/signals` - Get all signals (with optional filters: `ward_id`, `sentiment`, `category`, `limit`)
 - `GET /api/signals/:id` - Get a specific signal
 
+### Sentiment Analysis
+- `GET /api/sentiment/citywide` - Get citywide sentiment statistics (last 7 days)
+- `GET /api/sentiment/by-ward` - Get sentiment breakdown by ward (last 7 days)
+
 ## Database Schema
 
 ### Wards Table
@@ -326,19 +330,25 @@ npm run preview
 
 ## Project Status
 
-**Current Phase**: Phase 2 - Data Collection 🚧
+**Current Phase**: Phase 1 Complete ✅ → Phase 2 In Progress 🚧
 
+### Phase 1: Foundation (✅ COMPLETE)
 - [x] Project structure
 - [x] Database schema with PostGIS
 - [x] Backend API with TypeScript
 - [x] Frontend with React and Tailwind
-- [x] Basic dashboard layout
+- [x] Dashboard with real-time data display
 - [x] Database migrations and seeds
 - [x] Reddit data collector
-- [x] Sentiment analysis
-- [ ] Scheduled data fetching
-- [ ] Map integration
-- [ ] Real-time updates
+- [x] Sentiment analysis with scoring
+- [x] API integration (frontend connected to backend)
+- [x] Sentiment statistics endpoint
+
+### Phase 2: Enhanced Data Collection (🚧 IN PROGRESS)
+- [ ] Scheduled data fetching (cron jobs)
+- [ ] Additional Reddit subreddits
+- [ ] Map integration with Mapbox/Leaflet
+- [ ] Real-time updates via polling or WebSockets
 
 ## License
 
