@@ -1,18 +1,23 @@
 #!/bin/bash
-echo "Building frontend..."
+set -e
+
+echo "🔨 Building frontend..."
 cd frontend
 npm run build
 cd ..
 
-echo "Copying to docs folder..."
+echo "📦 Preparing docs folder..."
 rm -rf docs
-mkdir docs
+mkdir -p docs
 cp -r frontend/dist/* docs/
 
-echo "Adding .nojekyll..."
+echo "📝 Adding .nojekyll..."
 touch docs/.nojekyll
 
-echo "Done! Now run:"
-echo "git add docs frontend/vite.config.ts"
-echo "git commit -m 'Configure GitHub Pages deployment'"
-echo "git push"
+echo "✅ Done! Files are in /docs"
+echo ""
+echo "Next steps:"
+echo "1. git add docs"
+echo "2. git commit -m 'Deploy to GitHub Pages'"
+echo "3. git push"
+echo "4. Go to GitHub.com → Settings → Pages → Set folder to /docs"
