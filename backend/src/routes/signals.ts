@@ -76,4 +76,71 @@ router.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
+// POST /api/signals - Create a new signal
+router.post('/', async (req: Request, res: Response) => {
+  try {
+    const {
+      source_id,
+      source_type,
+      timestamp,
+      title,
+      body,
+      author,
+      url,
+      sentiment,
+      sentiment_score,
+      latitude,
+      longitude,
+      ward_id,
+      keywords,
+      category,
+    } = req.body;
+
+    // Validate required fields
+    if (!source_id || !source_type || !body || !sentiment || sentiment_score === undefined) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields: source_id, source_type, body, sentiment, sentiment_score',
+      });
+    }
+
+    const result = await query(
+      `INSERT INTO signals (
+        source_id, source_type, timestamp, title, body, author, url,
+        sentiment, sentiment_score, latitude, longitude, ward_id, keywords, category
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+      RETURNING *`,
+      [
+        source_id,
+        source_type,
+        timestamp || new Date(),
+        title || null,
+        body,
+        author || 'Anonymous',
+        url || null,
+        sentiment,
+        sentiment_score,
+        latitude || null,
+        longitude || null,
+        ward_id || null,
+        keywords || null,
+        category || null,
+      ]
+    );
+
+    const response: ApiResponse<Signal> = {
+      success: true,
+      data: result.rows[0],
+    };
+
+    res.status(201).json(response);
+  } catch (error) {
+    console.error('Error creating signal:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to create signal',
+    });
+  }
+});
+
 export default router;

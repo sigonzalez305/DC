@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { api, SentimentStats, Source } from '../services/api';
+import { api, SentimentStats, Source, Signal } from '../services/api';
 
 const Sidebar = () => {
   const [stats, setStats] = useState<SentimentStats>({
@@ -10,8 +10,11 @@ const Sidebar = () => {
     average_score: 0,
   });
   const [sources, setSources] = useState<Source[]>([]);
+  const [signals, setSignals] = useState<Signal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedWard, setSelectedWard] = useState<string>('');
+  const [selectedSentiment, setSelectedSentiment] = useState<string>('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +32,16 @@ const Sidebar = () => {
         if (sourcesResponse.success && sourcesResponse.data) {
           setSources(sourcesResponse.data);
         }
+
+        // Fetch signals with filters
+        const signalsResponse = await api.getSignals({
+          ward_id: selectedWard ? parseInt(selectedWard) : undefined,
+          sentiment: selectedSentiment || undefined,
+          limit: 20,
+        });
+        if (signalsResponse.success && signalsResponse.data) {
+          setSignals(signalsResponse.data);
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch data');
       } finally {
@@ -41,7 +54,7 @@ const Sidebar = () => {
     // Refresh every 30 seconds
     const interval = setInterval(fetchData, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [selectedWard, selectedSentiment]);
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
@@ -90,7 +103,11 @@ const Sidebar = () => {
         <div className="space-y-3">
           <div>
             <label className="block text-xs text-gray-600 mb-1">Ward</label>
-            <select className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-dc-blue">
+            <select
+              value={selectedWard}
+              onChange={(e) => setSelectedWard(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-dc-blue"
+            >
               <option value="">All Wards</option>
               <option value="1">Ward 1</option>
               <option value="2">Ward 2</option>
@@ -104,29 +121,22 @@ const Sidebar = () => {
           </div>
           <div>
             <label className="block text-xs text-gray-600 mb-1">Sentiment</label>
-            <select className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-dc-blue">
+            <select
+              value={selectedSentiment}
+              onChange={(e) => setSelectedSentiment(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-dc-blue"
+            >
               <option value="">All Sentiments</option>
               <option value="positive">Positive</option>
               <option value="neutral">Neutral</option>
               <option value="negative">Negative</option>
             </select>
           </div>
-          <div>
-            <label className="block text-xs text-gray-600 mb-1">Source Type</label>
-            <select className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-dc-blue">
-              <option value="">All Sources</option>
-              <option value="twitter">Twitter</option>
-              <option value="instagram">Instagram</option>
-              <option value="reddit">Reddit</option>
-              <option value="nextdoor">Nextdoor</option>
-              <option value="government">Government</option>
-            </select>
-          </div>
         </div>
       </div>
 
       {/* Active Sources */}
-      <div>
+      <div className="mb-6">
         <h3 className="text-sm font-semibold text-gray-600 mb-3">Active Sources</h3>
         {loading ? (
           <div className="text-sm text-gray-500">Loading...</div>
@@ -149,6 +159,75 @@ const Sidebar = () => {
                 </span>
               </div>
             ))}
+          </div>
+        )}
+      </div>
+
+      {/* Recent Signals */}
+      <div>
+        <h3 className="text-sm font-semibold text-gray-600 mb-3">
+          Recent Signals ({signals.length})
+        </h3>
+        {loading ? (
+          <div className="text-sm text-gray-500">Loading...</div>
+        ) : signals.length === 0 ? (
+          <div className="text-sm text-gray-500">
+            No signals yet. Generate mock data to get started.
+          </div>
+        ) : (
+          <div className="space-y-3 max-h-96 overflow-y-auto">
+            {signals.map((signal) => {
+              const sentimentColors = {
+                positive: 'border-l-green-500 bg-green-50',
+                neutral: 'border-l-yellow-500 bg-yellow-50',
+                negative: 'border-l-red-500 bg-red-50',
+              };
+
+              const sentimentTextColors = {
+                positive: 'text-green-700',
+                neutral: 'text-yellow-700',
+                negative: 'text-red-700',
+              };
+
+              return (
+                <div
+                  key={signal.id}
+                  className={`border-l-4 ${sentimentColors[signal.sentiment]} p-3 rounded-r text-xs`}
+                >
+                  {signal.title && (
+                    <div className="font-semibold text-gray-800 mb-1">
+                      {signal.title}
+                    </div>
+                  )}
+                  <div className="text-gray-700 mb-2 line-clamp-3">
+                    {signal.body}
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-gray-500">
+                    <div className="flex items-center space-x-2">
+                      <span className={`font-medium ${sentimentTextColors[signal.sentiment]}`}>
+                        {signal.sentiment}
+                      </span>
+                      {signal.ward_id && (
+                        <span className="text-gray-500">• Ward {signal.ward_id}</span>
+                      )}
+                    </div>
+                    <span>
+                      {new Date(signal.timestamp).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </span>
+                  </div>
+                  {signal.category && (
+                    <div className="mt-1">
+                      <span className="inline-block px-2 py-0.5 bg-dc-blue/10 text-dc-blue rounded text-xs">
+                        {signal.category}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
