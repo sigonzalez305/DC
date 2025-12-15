@@ -79,6 +79,53 @@ At this point:
 
 The dashboard will show **0 signals** initially because we haven't collected any data yet.
 
+## Generate Mock Data for Testing (Recommended)
+
+Before setting up the Reddit API, you can test the app with realistic mock data:
+
+### Generate 50 Mock Signals
+
+```bash
+# In a new terminal (make sure backend is running)
+curl -X POST http://localhost:3000/api/dev/generate-mock-data \
+  -H "Content-Type: application/json" \
+  -d '{"count": 50}'
+```
+
+This generates realistic DC-related signals about:
+- 🚇 Metro (delays, improvements, issues)
+- 🔒 Safety (community watch, concerns)
+- 🎉 Events (festivals, museums, concerts)
+- 🏠 Housing (rent, landlords, developments)
+- 🚗 Traffic (beltway, bike lanes, potholes)
+- 👥 Community (cleanup, restaurants, parks)
+
+Each signal has:
+- Mixed sentiment (positive, neutral, negative)
+- Random ward assignment (1-8)
+- Realistic timestamps (last 24 hours)
+- Sentiment scores and keywords
+
+### Refresh the Dashboard
+
+Go to http://localhost:5173 - you should now see:
+- Total signal count updated
+- Sentiment breakdown (positive, neutral, negative)
+- Signal list with color-coded borders
+- Active filters working
+
+### Clear and Regenerate Data
+
+```bash
+# Clear all signals
+curl -X DELETE http://localhost:3000/api/dev/clear-signals
+
+# Generate 100 new signals
+curl -X POST http://localhost:3000/api/dev/generate-mock-data \
+  -H "Content-Type: application/json" \
+  -d '{"count": 100}'
+```
+
 ## Collecting Data from Reddit (Optional)
 
 To populate the dashboard with real data from r/washingtondc:

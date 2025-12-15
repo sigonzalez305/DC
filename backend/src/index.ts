@@ -35,6 +35,8 @@ app.get('/', (req, res) => {
       signals: '/api/signals',
       wards: '/api/wards',
       sources: '/api/sources',
+      sentiment: '/api/sentiment/citywide',
+      dev: '/api/dev/generate-mock-data',
     },
   });
 });
