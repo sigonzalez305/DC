@@ -56,6 +56,12 @@ export interface Source {
   updated_at: string;
 }
 
+export interface Keyword {
+  word: string;
+  count: number;
+  sentiment: 'positive' | 'neutral' | 'negative';
+}
+
 class ApiClient {
   private baseUrl: string;
 
@@ -134,6 +140,16 @@ class ApiClient {
 
     const query = queryParams.toString();
     return this.request<Source[]>(`/sources${query ? `?${query}` : ''}`);
+  }
+
+  // Keywords endpoints
+  async getKeywords(params?: { limit?: number; top?: number }): Promise<ApiResponse<Keyword[]>> {
+    const queryParams = new URLSearchParams();
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.top) queryParams.append('top', params.top.toString());
+
+    const query = queryParams.toString();
+    return this.request<Keyword[]>(`/keywords${query ? `?${query}` : ''}`);
   }
 
   // Health check
