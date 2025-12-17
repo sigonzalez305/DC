@@ -4,6 +4,7 @@ import wardsRouter from './wards';
 import sourcesRouter from './sources';
 import sentimentRouter from './sentiment';
 import devRouter from './dev';
+import keywordsRouter from './keywords';
 
 const router = Router();
 
@@ -21,6 +22,7 @@ router.use('/signals', signalsRouter);
 router.use('/wards', wardsRouter);
 router.use('/sources', sourcesRouter);
 router.use('/sentiment', sentimentRouter);
+router.use('/keywords', keywordsRouter);
 router.use('/dev', devRouter);
 
 export default router;
