@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { api, SentimentStats, Source, Signal } from '../services/api';
+import { api } from '../services/api';
+import type { SentimentStats, Source, Signal } from '../services/api';
 
 const Sidebar = () => {
   const [stats, setStats] = useState<SentimentStats>({
