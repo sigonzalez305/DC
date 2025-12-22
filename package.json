@@ -1,0 +1,30 @@
+{
+  "name": "dc-community-pulse",
+  "version": "1.0.0",
+  "description": "Real-time community intelligence dashboard for Washington, DC",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test_collector.js",
+    "collect:mayor": "node -e \"require('./RSSCollector')().collect('mayor_newsroom')\"",
+    "setup:db": "psql -U postgres -d dc_community_pulse -f schema.sql",
+    "seed:sources": "psql -U postgres -d dc_community_pulse -f seed_sources.sql"
+  },
+  "keywords": [
+    "civic-tech",
+    "dc",
+    "community",
+    "analytics",
+    "sentiment-analysis"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "pg": "^8.11.3",
+    "rss-parser": "^3.13.0",
+    "dotenv": "^16.3.1",
+    "axios": "^1.6.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
