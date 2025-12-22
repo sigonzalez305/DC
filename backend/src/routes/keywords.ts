@@ -35,7 +35,7 @@ router.get('/', async (req: Request, res: Response) => {
 
     // Fetch recent signals
     const result = await query(
-      'SELECT body, sentiment, keywords FROM signals ORDER BY timestamp DESC LIMIT $1',
+      'SELECT body, sentiment, tags as keywords FROM signals ORDER BY timestamp DESC LIMIT $1',
       [limit]
     );
 

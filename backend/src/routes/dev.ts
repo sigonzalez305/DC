@@ -13,24 +13,23 @@ router.post('/generate-mock-data', async (req, res) => {
     for (const signal of signals) {
       await query(
         `INSERT INTO signals
-         (id, source_id, source_type, timestamp, body, author, sentiment, sentiment_score, keywords, ward_id)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+         (source_id, timestamp, body, author, sentiment, tags, ward_id, category, platform)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
         [
-          signal.id,
           signal.source_id,
-          signal.source_type,
           signal.timestamp,
           signal.body,
           signal.author,
           signal.sentiment,
-          signal.sentiment_score,
           signal.keywords,
-          signal.ward_id
+          signal.ward_id,
+          'community',
+          signal.source_type
         ]
       );
     }
 
-    res.json({ success: true, count: signals.length, signals });
+    res.json({ success: true, count: signals.length, message: `Generated ${signals.length} mock signals` });
   } catch (error) {
     console.error('Error generating mock data:', error);
     res.status(500).json({ error: 'Failed to generate mock data' });

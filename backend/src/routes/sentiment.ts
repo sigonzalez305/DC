@@ -20,7 +20,11 @@ router.get('/citywide', async (req: Request, res: Response) => {
       SELECT
         sentiment,
         COUNT(*) as count,
-        AVG(sentiment_score) as avg_score
+        CASE
+          WHEN sentiment = 'positive' THEN 0.5
+          WHEN sentiment = 'negative' THEN -0.5
+          ELSE 0
+        END as avg_score
       FROM signals
       WHERE timestamp >= NOW() - INTERVAL '7 days'
       GROUP BY sentiment
@@ -75,7 +79,11 @@ router.get('/by-ward', async (req: Request, res: Response) => {
         w.name as ward_name,
         s.sentiment,
         COUNT(*) as count,
-        AVG(s.sentiment_score) as avg_score
+        CASE
+          WHEN s.sentiment = 'positive' THEN 0.5
+          WHEN s.sentiment = 'negative' THEN -0.5
+          ELSE 0
+        END as avg_score
       FROM signals s
       LEFT JOIN wards w ON s.ward_id = w.id
       WHERE s.timestamp >= NOW() - INTERVAL '7 days'
