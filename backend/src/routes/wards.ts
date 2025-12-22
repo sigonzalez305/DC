@@ -8,9 +8,9 @@ const router = Router();
 router.get('/', async (req: Request, res: Response) => {
   try {
     const result = await query(`
-      SELECT id, name, population,
+      SELECT id, name, ward_number as population,
              ST_AsGeoJSON(geom) as geom,
-             created_at, updated_at
+             created_at
       FROM wards
       ORDER BY id
     `);
@@ -40,9 +40,9 @@ router.get('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const result = await query(
-      `SELECT id, name, population,
+      `SELECT id, name, ward_number as population,
               ST_AsGeoJSON(geom) as geom,
-              created_at, updated_at
+              created_at
        FROM wards
        WHERE id = $1`,
       [id]

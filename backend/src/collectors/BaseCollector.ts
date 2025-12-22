@@ -54,7 +54,7 @@ export class BaseCollector {
   /**
    * Main collection method - override in child classes
    */
-  async collect(): Promise<any> {
+  async collect(sourceSlug?: string): Promise<any> {
     throw new Error('collect() must be implemented by child class');
   }
 
