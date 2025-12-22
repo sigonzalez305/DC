@@ -36,6 +36,16 @@ app.get('/', (req, res) => {
       wards: '/api/wards',
       sources: '/api/sources',
       sentiment: '/api/sentiment/citywide',
+      keywords: '/api/keywords',
+      collector: {
+        status: 'GET /api/collector/status',
+        sources: 'GET /api/collector/sources',
+        stats: 'GET /api/collector/stats',
+        run: 'POST /api/collector/run/:slug',
+        runAll: 'POST /api/collector/run-all',
+        schedulerStart: 'POST /api/collector/scheduler/start',
+        schedulerStop: 'POST /api/collector/scheduler/stop',
+      },
       dev: '/api/dev/generate-mock-data',
     },
   });
